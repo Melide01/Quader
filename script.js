@@ -36,6 +36,36 @@ var project_data = {
     }
 };
 
+const emptyProject = {
+    "metadata": {
+        "project_name": "Empty Project",
+        "project_category": "unknown",
+        "creator": "by You",
+        "created_time": "2024-03-03",
+        "description": "This is a description for this project."
+    },
+    "roles": [
+        [
+            "You",
+            "Creator"
+        ]
+    ],
+    "settings": {
+        "statusPicker": {
+            "Work in Progress": "#ff8822",
+            "Finished": "#55dd00",
+            "Abandoned": "#EE0000"
+        },
+        "theme": {
+            "background-color": "#aaa",
+            "header-color": ['#EEEEEE', '#BBBBBB'],
+            "notes-color": "#331100"
+        }
+    },
+    "project": {
+    }
+};
+
 //UI element
 const mainUI = document.getElementById('UI');
 
@@ -77,13 +107,19 @@ const projDateAuthor = document.getElementById('projectDateAuthor');
 var breakLength = 0;
 var notesLength = 0;
 
-document.getElementById('inputFile').addEventListener('change', function () {
-    loadData();
-})
-
 function process() {
+    //updates important stuff
     currentTime = new Date();
     mainUI.style.top = window.scrollY + 'px';
+
+    //update breaks length
+    var breaks = document.querySelectorAll('.breakChap');
+    var proj = document.getElementById('project');
+    breaks.forEach(function(breakChap) {
+        breakChap.style.height = window.getComputedStyle(proj).getPropertyValue('height');
+    });
+
+    //update the process
     requestAnimationFrame(process);
 };
 process()
@@ -98,6 +134,18 @@ function pageInit() {
     };
 }
 pageInit();
+
+function createProject() {
+    var newProj = emptyProject;
+    newProj['metadata']['project_name'] = document.getElementById('projNameEdit').value;
+    newProj['metadata']['project_category'] = document.getElementById('projCategoryEdit').value;
+    newProj['metadata']['description'] = document.getElementById('projDescEdit').value;
+    newProj['metadata']['created_time'] = currentTime.toLocaleString('en-US', timeOptions);
+
+    project_data = newProj;
+    loadProject();
+    UIvisible('projectCreator', 'none');
+}
 
 function downloadData() {
     var dictionaryString = 'project_data = ' + JSON.stringify(project_data, null, 2) + ';';
@@ -135,6 +183,7 @@ function loadData() {
     };
 
     reader.readAsText(file);
+    fileInput.value = '';
 }
 
 
@@ -326,16 +375,6 @@ function UIvisible(ui, type) {
     mainUI.style.display = type;
     tempUI = document.getElementById(ui);
     tempUI.style.display = type;
-}
-function showUI(type) {
-    mainUI.style.display = 'flex';
-    tempUI = document.getElementById(type);
-    tempUI.style.display = 'flex';
-}
-function hideUI(type) {
-    mainUI.style.display = 'none';
-    tempUI = document.getElementById(type);
-    tempUI.style.display = 'none';
 }
 function addToProject(type) {
     if (type === 'task') {

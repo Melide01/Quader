@@ -113,3 +113,16 @@ function moveKeyToIndex(obj, key, index) {
     delete obj[key];
     return addToDictionaryIndex(obj, key, saveValue, index);
 }
+
+function renameKey(obj, key, newKey) {
+    if (typeof obj !== 'object') {
+        alert('This is not a dictionary');
+        return obj;
+    };
+    var objArray = Object.keys(obj);
+    const saveValue = obj[key];
+    const getIndex = objArray.indexOf(key);
+
+    delete obj[key];
+    return addToDictionaryIndex(obj, newKey, saveValue, getIndex)
+}

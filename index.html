@@ -17,11 +17,74 @@
         <script defer src="script.js"></script>
     </head>
     <body>
+        <p style="cursor: pointer; margin-top: 0; font-size: 20px; position: absolute; top: 10px; right: 10px;" onclick="UIvisible('settingsMenu', 'flex')">⚙️</p>
         <div id="UI">
+            <input style="display: none; width: 100%; height: 100%;" type="file" id="inputFile" accept=".js" onchange="UIvisible('welcomeMenu', 'none'); UIvisible('settingsMenu', 'none'); loadData()">
+            <div id="welcomeMenu">
+                <h1 style="margin-bottom: 0; font-size: 25px;">DevPlanner</h1>
+                <p style="margin-top: 0;">Create a new planner or import your planner</p>
+
+                <div style=" display: flex; flex-direction: row; position: absolute; right: 10px; top: 10px;">
+                    <input id="yourName" style="margin-left: 10px; height:15px;" placeholder="your name" type="text" >
+                </div>
+
+                <div style="display: flex; flex-direction: row;">
+                    <button style="margin-right: 5px;" onclick="UIvisible('welcomeMenu', 'none'); UIvisible('projectCreator', 'flex')">Create planner</button>
+                    <button style="margin-right: 5px;" onclick="document.getElementById('inputFile').click()">Load planner</button>
+                </div>
+            </div>
+
+            <div id="settingsMenu">
+                <p id="closeUI" onclick="UIvisible('settingsMenu', 'none')" style="position: absolute; top: 0; right: 0; margin-top: 10px; margin-right: 15px; cursor: pointer;">x</p>
+                <h1 style="margin-top: 0; position: absolute; top: 10px; left: 10px;">Settings</h1>
+
+                <div style="position: absolute; left: 15px; width: 40%;">
+                    <p style="margin-top: 0; margin-bottom: 0;">Status Colors:</p>
+                    <div style="display: flex; flex-direction: row;">
+                        <input id="inputStatus0" style="margin-left: 5px; width: 30px;" type="color">
+                        <input id="inputStatus1" style="margin-left: 5px; width: 30px;" type="color">
+                        <input id="inputStatus2" style="margin-left: 5px; width: 30px;" type="color">
+                    </div>
+
+                    <p style="margin-top: 0; margin-bottom: 0;">Notes Color:</p>
+                    <input id="colorNotes" style="margin-left: 5px; width: 30px;" type="color">
+                    <p style="margin-top: 0; margin-bottom: 0;">Break Color:</p>
+                    <input id="colorBreaks" style="margin-left: 5px; width: 30px;" type="color">
+                    
+                    
+                </div>
+
+                <div style="position: absolute; right: 15px; width: 40%;">
+                    <button onclick="downloadData()">Save project</button>
+                    <button onclick="document.getElementById('inputFile').click()">Load project</button>
+                    <button style="margin-right: 5px;" onclick="UIvisible('welcomeMenu', 'none'); UIvisible('settingsMenu', 'none'); UIvisible('projectCreator', 'flex')">Create planner</button>
+                </div>
+            </div>
+
             <div id="displayLoader">
                 <input type="file" id="fileInput" accept=".js">
                 <button onclick="loadData()">Load project</button>
             </div>
+
+            <div id="projectCreator">
+                <h1 style="text-decoration: underline; font-size: 25px;">Create a Project</h1>
+                <p id="closeUI" onclick="UIvisible('projectCreator', 'none')" style="position: absolute; top: 0; right: 0; margin-top: 10px; margin-right: 15px; cursor: pointer;">x</p>
+                <div class="createPannel">
+                    <p>✍︎ </p>
+                    <input id="projNameEdit" type="text" style="font-size: 20px; font-family: 'Montserrat', sans-serif; border: none; outline: none;" value="Project Name">
+                </div>
+                <div class="createPannel">
+                    <p>✍︎ </p>
+                    <input id="projCategoryEdit" type="text" style="font-size: 20px; font-family:'Montserrat', sans-serif; border: none; outline: none;" value="Category">
+                </div>
+                
+                
+                <p style="margin-top: 10px;">Description:</p>
+                <input id="projDescEdit" type="text" style="height: 100px; width: 60%;">
+
+                <button onclick="createProject()" style="position: absolute; bottom: 5px; right: 5px; width: 25%; height: 30px; margin-top: 10px;">Create</button>
+            </div>
+
             <div id="statusPicker">
                 <select id="statusSelector">
                 </select>
@@ -56,53 +119,16 @@
 
         <p id="popup-message">Hi</p>
         <div id="project-meta">
-            <h1 id="projectName">Welcome!</h1>
-            <p id="projectCategory" style="margin-top: -22px;">welcome page</p>
-            <p id="projectDateAuthor" style="font-size: 10px; font-weight: 500; margin-top: -15px;">by Melide created the 07-03-2024</p>
-            <p id="projectDesc" style="font-size: 15px; font-weight: 700;">Here are some examples to this planner.</p>
+            <h1 id="projectName"></h1>
+            <p id="projectCategory" style="margin-top: -22px;"></p>
+            <p id="projectDateAuthor" style="font-size: 10px; font-weight: 500; margin-top: -15px;"></p>
+            <p id="projectDesc" style="font-size: 15px; font-weight: 700;"></p>
         </div>
 
         <br>
 
         <div id="project">
-            <div id="project-container">
-                <div id="chapters" onmouseover="popupMessage('block')" onmouseout="popupMessage('none')" data-status="Finished">
-                    <h2>This is a chapter</h2>
-                    <div id="statusIcon" class="statusIcon"></div>
-                </div>
-                <div id="chapter-list">
-                    <div id="task">You can add tasks here<input type="checkbox" name="task"></div>
-                    <div id="addTask">+</div>
-                </div>
-            </div>
-
-            <div class="breakChap"></div>
-            <div class="notesChap">Hello<br>This is a note</div>
-
-            <div id="project-container">
-                <div id="chapters" onmouseover="popupMessage('block')" onmouseout="popupMessage('none')" data-status="Finished">
-                    <h2>Chapters example</h2>
-                    <div id="statusIcon" class="statusIcon"></div>
-                </div>
-                <div id="chapter-list">
-                    <div id="task">Do this today<input type="checkbox" name="task"></div>
-                    <div id="task">Do this tomorrow<input type="checkbox" name="task"></div>
-                    <div id="task">Do this yesterday<input type="checkbox" name="task"></div>
-                    <div id="addTask">+</div>
-                </div>
-            </div>
-
-            <div id="addChap">
-                <p>+</p>
-            </div>
-            
         </div>
-
-        <br><br><br><br>
-
-        <button onclick="downloadData()">Download project</button>
-        <input type="file" id="inputFile" accept=".js">
-        <button onclick="loadProject()">Load project</button>
 
 
         <script>

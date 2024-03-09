@@ -6,13 +6,54 @@ body {
     background-color: #aaa;
 }
 
+.createPannel {
+    display: flex; flex-direction: row;
+}
+
 #UI {
-    display: none; 
+    display: flex; 
     position: absolute;
     background-color: #00000055;
     position: absolute; top: 0; left: 0;
     width: 100%; height: 100%;
     align-items: center; justify-content: center;
+}
+#welcomeMenu {
+    display: flex;
+    position: relative;
+    padding-top: 15px;
+    padding-left: 15px; margin-left: 10px; padding-bottom: 10px;
+    justify-content: center; align-items: flex-start;
+    flex-direction: column;
+    background-color: #fff;
+    width: 80%; min-height: 50%;
+    border-radius: 5px;
+}
+#settingsMenu {
+    display: none;
+    position: relative;
+    padding-top: 15px;
+    padding-left: 15px; margin-left: 10px; padding-bottom: 10px;
+    justify-content: center; align-items: flex-start;
+    flex-direction: column;
+    background-color: #fff;
+    width: 80%; min-height: 50%;
+    border-radius: 5px;
+}
+#projectCreator {
+    display: none;
+    position: relative;
+    padding-top: 15px;
+    padding-left: 15px; margin-left: 10px; padding-bottom: 10px;
+    justify-content: center; align-items: flex-start;
+    flex-direction: column;
+    background-color: #fff;
+    width: 70%; min-height: 30%;
+    border-radius: 5px;
+}
+#projectCreator p {
+    margin-top: 0;
+    margin-bottom: 0;
 }
 #displayLoader {
     display: none; justify-content: center;
@@ -92,7 +133,7 @@ h2 {
 .breakChap {
     cursor: pointer;
     margin-right: 10px; margin-left: 5px;
-    min-width: 3px; height: 500px; background-color: #777;
+    min-width: 3px; height: 0; background-color: #777;
 }
 
 .notesChap {
@@ -100,7 +141,7 @@ h2 {
     margin-right: 5px;
     padding-top: 5px;padding-bottom: 5px;
     font-size: 12px; font-weight: 700; color: #ddd;
-    display: flex; width: 15%; min-width: 80px; max-width: 150px; flex-direction: column; 
+    display: flex; width: 15%; max-width: 80px; flex-direction: column; 
     padding-left: 5px; padding-right: 5px;
     background-color: #331100;
     border-radius: 5px;
