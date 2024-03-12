@@ -34,6 +34,15 @@
                 </div>
             </div>
 
+            <div id="modifyData">
+                <p id="closeUI" onclick="UIvisible('modifyData', 'none')" style="position: absolute; top: 0; right: 0; margin-top: 10px; margin-right: 15px; cursor: pointer;">x</p>
+                <h2>Type here to modify</h2>
+                <input id="modifyName" type="text">
+                <input id="modifyColor" type="color">
+                <button style="margin-top: 25px; font-size: 15px;" onclick="modifyData()">Change</button>
+                <button onclick="deleteData()" style="background-color: #D00; color: #fff; position: absolute; margin: 0; bottom: 10px; right: 10px; cursor: pointer;">Delete</button>
+            </div>
+
             <div id="settingsMenu">
                 <p id="closeUI" onclick="UIvisible('settingsMenu', 'none')" style="position: absolute; top: 0; right: 0; margin-top: 10px; margin-right: 15px; cursor: pointer;">x</p>
                 <h1 style="margin-top: 0; position: absolute; top: 10px; left: 10px;">Settings</h1>
@@ -48,8 +57,8 @@
 
                     <p style="margin-top: 0; margin-bottom: 0;">Notes Color:</p>
                     <input id="colorNotes" style="margin-left: 5px; width: 30px;" type="color">
-                    <p style="margin-top: 0; margin-bottom: 0;">Break Color:</p>
-                    <input id="colorBreaks" style="margin-left: 5px; width: 30px;" type="color">
+                    <p style="margin-top: 0; margin-bottom: 0;">Background Color:</p>
+                    <input id="colorBG" style="margin-left: 5px; width: 30px;" type="color">
                     
                     
                 </div>

@@ -62,8 +62,7 @@ const emptyProject = {
             "notes-color": "#331100"
         }
     },
-    "project": {
-    }
+    "project": {}
 };
 
 //UI element
@@ -136,13 +135,15 @@ function pageInit() {
 pageInit();
 
 function createProject() {
-    var newProj = emptyProject;
-    newProj['metadata']['project_name'] = document.getElementById('projNameEdit').value;
-    newProj['metadata']['project_category'] = document.getElementById('projCategoryEdit').value;
-    newProj['metadata']['description'] = document.getElementById('projDescEdit').value;
-    newProj['metadata']['created_time'] = currentTime.toLocaleString('en-US', timeOptions);
+    project_data = {};
+    project_data = emptyProject;
+    project_data['metadata']['project_name'] = document.getElementById('projNameEdit').value;
+    project_data['metadata']['project_category'] = document.getElementById('projCategoryEdit').value;
+    project_data['metadata']['description'] = document.getElementById('projDescEdit').value;
+    project_data['metadata']['created_time'] = currentTime.toLocaleString('en-US', timeOptions);
+    project_data['metadata']['creator'] = document.getElementById('yourName').value;
 
-    project_data = newProj;
+    
     loadProject();
     UIvisible('projectCreator', 'none');
 }
@@ -206,6 +207,13 @@ function loadProject() {
     document.body.style.backgroundColor = project_data['settings']['theme']['background-color'];
     document.getElementById('project-meta').style.background = 'linear-gradient(to bottom,' + project_data['settings']['theme']['header-color'][0] + ', ' + project_data['settings']['theme']['header-color'][1] + ')';
 
+    // sets metadata color
+    document.getElementById('inputStatus0').value = project_data['settings']['statusPicker']['Abandoned'];
+    document.getElementById('inputStatus1').value = project_data['settings']['statusPicker']['Work in Progress'];
+    document.getElementById('inputStatus2').value = project_data['settings']['statusPicker']['Finished'];
+    document.getElementById('colorNotes').value = project_data['settings']['theme']['notes-color'];
+    document.getElementById('colorBG').value = project_data['settings']['theme']['background-color'];
+
     //update colors
     var moyenne = (getColorMoyenne(project_data['settings']['theme']['header-color'][0]) + getColorMoyenne(project_data['settings']['theme']['header-color'][1])) / 2;
     console.log(moyenne / 255)
@@ -253,7 +261,11 @@ function loadProject() {
                 notesLength++;
                 // let users edit notes
                 notesChap.onclick = function () {
-                    console.log(this.getAttribute('data-categoryid'));
+                    editScope = project_data['project'];
+                    editTarget = [chapters[i]];
+                    document.getElementById('modifyName').value = project_data['project'][chapters[i]];
+                    updateModifyTab('notes');
+                    UIvisible('modifyData', 'flex');
                 }
             }
             continue;
@@ -283,7 +295,11 @@ function loadProject() {
 
         // Let user edit chapters
         chapDiv.onclick = function () {
-            console.log(chapters[i]);
+            editScope = project_data['project'];
+            editTarget = [chapters[i]];
+            document.getElementById('modifyName').value = chapters[i];
+            updateModifyTab('chapter');
+            UIvisible('modifyData', 'flex');
         }
 
         // Create the status icon and changes its color to the presets status
@@ -312,14 +328,19 @@ function loadProject() {
 
             taskDiv.setAttribute('data-taskid', 'div/' + taskId);
             inputBox.setAttribute('data-taskid', 'input/' + taskId);
-            taskText.setAttribute('data-taskid', 'text/' + taskId);
+            taskText.setAttribute('data-taskid', taskId);
 
             let taskMetadata = project_data['project'][chapters[i]]['tasks'][taskList[u]]["metadata"];
             inputBox.checked = taskMetadata["status"];
 
-            // allows users to 
+            // allows users to modify tasks
             taskText.onclick = function () {
-                console.log(this.getAttribute('data-taskid'));
+                var tempArray = this.getAttribute('data-taskid').split("/");
+                editScope = project_data['project'][tempArray[0]]['tasks'];
+                editTarget = tempArray;
+                document.getElementById('modifyName').value = tempArray[1]
+                updateModifyTab('task');
+                UIvisible('modifyData', 'flex');
             }
 
             // allows users to update tasks
@@ -418,4 +439,51 @@ function addToProject(type) {
     tempUI.style.display = 'none';
     tempUI = '';
     loadProject();
+}
+
+function modifyData() {
+    const modifyName = document.getElementById('modifyName');
+    const modifyColor = document.getElementById('modifyColor');
+
+    var output;
+    const tryTask = project_data['project'][editTarget[0]]
+
+    if (typeof tryTask !== 'object') {
+        console.log('hey');
+        project_data['project'][editTarget[0]] = modifyName.value;
+    } else {
+        if (editTarget.length === 1) {
+            // if is a chapter
+            project_data['project'][editTarget[0]]['metadata']['background-color'] = modifyColor.value;
+            editScope = project_data['project'];
+            output = renameKey(editScope, editTarget[0], modifyName.value);
+            project_data['project'] = output;
+        } else {
+            // if is a task
+            output = renameKey(editScope, editTarget[1], modifyName.value)
+            project_data['project'][editTarget[0]]['tasks'] = output;
+        }
+    }
+
+    UIvisible('modifyData', 'none');
+    loadProject()
+}
+
+function deleteData() {
+    if (editTarget.length === 1) {
+        delete project_data['project'][editTarget[0]];
+    } else {
+        delete project_data['project'][editTarget[0]]['tasks'][editTarget[1]];
+    }
+    UIvisible('modifyData', 'none');
+    loadProject();
+}
+
+function updateModifyTab(type) {
+    if (type === 'chapter') {
+        document.getElementById('modifyColor').value = project_data['project'][editTarget[0]]['metadata']['background-color'];
+        document.getElementById('modifyColor').style.display = 'block';
+    } else {
+        document.getElementById('modifyColor').style.display = 'none';
+    }
 }
