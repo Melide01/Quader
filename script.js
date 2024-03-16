@@ -7,18 +7,7 @@ var project_data = {
         "description": "This is a description for this project."
     },
     "roles": [
-        [
-            "John Doe",
-            "Musician"
-        ],
-        [
-            "Jane Bird",
-            "Designer"
-        ],
-        [
-            "Jeremy Cave",
-            "Writer"
-        ]
+        []
     ],
     "settings": {
         "statusPicker": {
@@ -27,13 +16,14 @@ var project_data = {
             "Abandoned": "#EE0000"
         },
         "theme": {
+            "background-image": undefined,
             "background-color": "#aaa",
-            "header-color": ['#EEEEEE', '#BBBBBB'],
+            "header-image": undefined,
+            "header-color": [],
             "notes-color": "#331100"
         }
     },
-    "project": {
-    }
+    "project": {}
 };
 
 const emptyProject = {
@@ -57,13 +47,21 @@ const emptyProject = {
             "Abandoned": "#EE0000"
         },
         "theme": {
+            "background-image": undefined,
             "background-color": "#aaa",
-            "header-color": ['#EEEEEE', '#BBBBBB'],
+            "header-image": undefined,
+            "header-color": ['#eee', '#bbb'],
             "notes-color": "#331100"
         }
     },
     "project": {}
 };
+
+const headerInfo = {
+    "zombiU-header.png": {
+        "posX": "80%", "posY": "20%", "color": "#ddd"
+    }
+}
 
 //UI element
 const mainUI = document.getElementById('UI');
@@ -124,6 +122,14 @@ function process() {
 process()
 
 function pageInit() {
+    if (localStorage.getItem('project') !== null) {
+        const saveProj = localStorage.getItem('project');
+        project_data = JSON.parse(saveProj)
+        console.log(project_data)
+        loadProject();
+        UIvisible('welcomeMenu', 'none')
+    }
+
     for (let i = 0; i < statusArray.length; i++) {
         var optionElement = document.createElement("option");
         optionElement.value = statusArray[i];
@@ -136,7 +142,7 @@ pageInit();
 
 function createProject() {
     project_data = {};
-    project_data = emptyProject;
+    project_data = JSON.parse(JSON.stringify(emptyProject));
     project_data['metadata']['project_name'] = document.getElementById('projNameEdit').value;
     project_data['metadata']['project_category'] = document.getElementById('projCategoryEdit').value;
     project_data['metadata']['description'] = document.getElementById('projDescEdit').value;
@@ -187,9 +193,9 @@ function loadData() {
     fileInput.value = '';
 }
 
+function loadProject(condition) {
+    localStorage.setItem('project', JSON.stringify(project_data));
 
-
-function loadProject() {
     // init
     mainProject.innerHTML = "";
     breakLength = 0;
@@ -204,8 +210,28 @@ function loadProject() {
     projDesc.innerText = project_data['metadata']['description'];
 
     // set theme
-    document.body.style.backgroundColor = project_data['settings']['theme']['background-color'];
-    document.getElementById('project-meta').style.background = 'linear-gradient(to bottom,' + project_data['settings']['theme']['header-color'][0] + ', ' + project_data['settings']['theme']['header-color'][1] + ')';
+    
+    if (project_data['settings']['theme']['background-image'] !== undefined) {
+        document.body.style.backgroundImage = "url('assets/background-images/" + project_data['settings']['theme']['background-image'] + "')";
+    } else {
+        document.body.style.backgroundColor = project_data['settings']['theme']['background-color'];
+    }
+    if (project_data['settings']['theme']['header-image'] !== undefined) {
+        console.log('assets/header/' + project_data['settings']['theme']['header-image']);
+        const projMetaElement = document.getElementById('project-meta');
+        projMetaElement.style.backgroundImage = "url('assets/header/" + project_data['settings']['theme']['header-image'] + "')";
+        projMetaElement.style.backgroundPosition = headerInfo[project_data['settings']['theme']['header-image']]['posX'] + ' ' + headerInfo[project_data['settings']['theme']['header-image']]['posY'];
+        projMetaElement.style.color = headerInfo[project_data['settings']['theme']['header-image']]['color'];
+        //headerInfo
+    } else {
+        document.getElementById('project-meta').style.background = 'linear-gradient(to bottom,' + project_data['settings']['theme']['header-color'][0] + ', ' + project_data['settings']['theme']['header-color'][1] + ')';
+        var headerMoyenne = (getColorMoyenne(project_data['settings']['theme']['header-color'][0]) + getColorMoyenne(project_data['settings']['theme']['header-color'][1])) / 2;
+        if ((headerMoyenne / 255) < 0.5) {
+            document.getElementById('project-meta').style.color = '#DDDDDD';
+        } else {
+        document.getElementById('project-meta').style.color = '#222222';
+    }
+    }
 
     // sets metadata color
     document.getElementById('inputStatus0').value = project_data['settings']['statusPicker']['Abandoned'];
@@ -215,13 +241,8 @@ function loadProject() {
     document.getElementById('colorBG').value = project_data['settings']['theme']['background-color'];
 
     //update colors
-    var moyenne = (getColorMoyenne(project_data['settings']['theme']['header-color'][0]) + getColorMoyenne(project_data['settings']['theme']['header-color'][1])) / 2;
-    console.log(moyenne / 255)
-    if ((moyenne / 255) < 0.5) {
-        document.getElementById('projectName').style.color = '#DDDDDD';
-    } else {
-        document.getElementById('projectName').style.color = '#222222';
-    }
+    
+    
 
     for (let i = 0; i < chapters.length; i++) {
         let isDic = project_data['project'][chapters[i]];
@@ -283,7 +304,6 @@ function loadProject() {
 
         // adapt text color
         var chapTextColor;
-
         if ((getColorMoyenne(chapMetadata['background-color']) / 255) < 0.5) {
             chapTextColor = '#EEEEEE';
         } else {
@@ -363,7 +383,8 @@ function loadProject() {
             }
         };
 
-        statusIcon.style.backgroundColor = settings["statusPicker"][chapMetadata["status"]];
+        // changes the status icon color
+        statusIcon.style.backgroundColor = project_data['settings']["statusPicker"][chapMetadata["status"]];
 
         // To create new tasks !!
         const addTaskDiv = document.createElement('div'); addTaskDiv.id = "addTask"; addTaskDiv.setAttribute('data-addtask', chapters[i]); addTaskDiv.innerText = '+'; chapList.append(addTaskDiv);
@@ -396,6 +417,7 @@ function UIvisible(ui, type) {
     mainUI.style.display = type;
     tempUI = document.getElementById(ui);
     tempUI.style.display = type;
+    updateMoveArrow();
 }
 function addToProject(type) {
     if (type === 'task') {
@@ -404,7 +426,7 @@ function addToProject(type) {
             alert('Please put a name');
             return;
         };
-        project_data['project'][editTarget]['tasks'] = addToDictionaryIndex(editScope, taskName.value, { "metadata": { "status": false, "creation_date": currentTime.toLocaleString('en-US', timeOptions), "completion_date": "" } }, 999);
+        project_data['project'][editTarget]['tasks'] = { ...addToDictionaryIndex(editScope, taskName.value, { "metadata": { "status": false, "creation_date": currentTime.toLocaleString('en-US', timeOptions), "completion_date": "" } }, 999)};
         document.getElementById('taskName').value = '';
     } else if (type === 'chapter') {
         var chapType = document.getElementById('chapSelector').value;
@@ -439,6 +461,7 @@ function addToProject(type) {
     tempUI.style.display = 'none';
     tempUI = '';
     loadProject();
+    ;
 }
 
 function modifyData() {
@@ -466,7 +489,8 @@ function modifyData() {
     }
 
     UIvisible('modifyData', 'none');
-    loadProject()
+    loadProject();
+    ;
 }
 
 function deleteData() {
@@ -477,6 +501,7 @@ function deleteData() {
     }
     UIvisible('modifyData', 'none');
     loadProject();
+    ;
 }
 
 function updateModifyTab(type) {
@@ -486,4 +511,67 @@ function updateModifyTab(type) {
     } else {
         document.getElementById('modifyColor').style.display = 'none';
     }
+}
+
+function changeStatusColor(element) {
+    project_data['settings']['statusPicker'][element.getAttribute('data-status')] = element.value;
+    loadProject();
+    ;
+}
+function changesSettingsTheme(element) {
+    project_data['settings']['theme'][element.getAttribute('data-settings')] = element.value;
+    loadProject();
+    ;
+}
+
+function updateMoveArrow() {
+    const itemArray = Object.keys(editScope);
+    var key;
+    const plusButtons = document.querySelectorAll('.plusButton');
+    const minusButtons = document.querySelectorAll('.minusButton');
+
+    if (editTarget.length > 1) {
+        key = editTarget[1];
+    } else {
+        key = editTarget[0]; 
+    };
+    
+    if ((itemArray.indexOf(key) + 1) > (itemArray.length - 1)) {
+        document.getElementById('plsButton').style.color = '#ccc';
+        document.getElementById('minButton').style.color = '#000';
+    } else if ((itemArray.indexOf(key) - 1) < 0) {
+        document.getElementById('plsButton').style.color = '#000';
+        document.getElementById('minButton').style.color = '#ccc';
+    } else {
+        document.getElementById('plsButton').style.color = '#000';
+        document.getElementById('minButton').style.color = '#000';
+    }
+}
+
+function moveStuff(dir) {
+    const itemArray = Object.keys(editScope);
+    var itemIndex = 0;
+    var itemDir = 0;
+    var selectedKey;
+    
+    if (editTarget.length > 1) {
+        itemIndex = itemArray.indexOf(editTarget[1]);
+        selectedKey = editTarget[1];
+    } else {
+        itemIndex = itemArray.indexOf(editTarget[0]);
+        selectedKey = editTarget[0];
+    }
+    itemDir = itemIndex + dir;
+    if (itemDir < 0 || itemDir > (itemArray.length - 1)) {
+        return
+    }
+
+    if (editTarget.length > 1) {
+        project_data['project'][editTarget[0]]['tasks'] = moveKeyToIndex(editScope, selectedKey, itemDir);
+    } else {
+        project_data['project'] = moveKeyToIndex(editScope, selectedKey, itemDir);
+    }
+
+    UIvisible('modifyData', 'none');
+    loadProject();
 }

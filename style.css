@@ -1,9 +1,13 @@
 body {
     padding: 0;
     margin: 0;
-    margin-left: 5%; margin-right: 5%;
+    margin-left: 5%; margin-right: 5%; 
     font-family: "Montserrat", sans-serif;
     background-color: #aaa;
+}
+
+html {
+    background-size: 100% 100%; background-repeat: no-repeat;
 }
 
 .createPannel {
@@ -106,7 +110,7 @@ body {
 }
 
 #project-meta {
-    color: #333; background: linear-gradient(to bottom, #eee, #bbb);
+    color: #333; 
     margin-top: 5px;
     padding-left: 5%; padding-right: 5%; padding-bottom: 10px; padding-top: 1px;
     border-radius: 10px;

@@ -4,6 +4,8 @@
         <meta name="viewport" content="width=320, initial-scale=1">
         <meta charset="utf-8">
 
+        <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-straight/css/uicons-regular-straight.css'>
+
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -17,7 +19,8 @@
         <script defer src="script.js"></script>
     </head>
     <body>
-        <p style="cursor: pointer; margin-top: 0; font-size: 20px; position: absolute; top: 10px; right: 10px;" onclick="UIvisible('settingsMenu', 'flex')">⚙️</p>
+        <!-- <p style="cursor: pointer; margin-top: 0; font-size: 20px; position: absolute; top: 10px; right: 10px;" onclick="UIvisible('settingsMenu', 'flex')">⚙️</p> -->
+        <i class="fi fi-rs-settings" style="color: #fff; background-color: #00000099; padding: 8px; border-radius: 15px; cursor: pointer; font-size: 20px; position: absolute; top: 10px; right: 10px;" onclick="UIvisible('settingsMenu', 'flex')"></i>
         <div id="UI">
             <input style="display: none; width: 100%; height: 100%;" type="file" id="inputFile" accept=".js" onchange="UIvisible('welcomeMenu', 'none'); UIvisible('settingsMenu', 'none'); loadData()">
             <div id="welcomeMenu">
@@ -37,10 +40,18 @@
             <div id="modifyData">
                 <p id="closeUI" onclick="UIvisible('modifyData', 'none')" style="position: absolute; top: 0; right: 0; margin-top: 10px; margin-right: 15px; cursor: pointer;">x</p>
                 <h2>Type here to modify</h2>
-                <input id="modifyName" type="text">
+                <input id="modifyName" type="text" onchange="modifyData()">
                 <input id="modifyColor" type="color">
+
+                <h2>Click here to move</h2>
+                <div id="moveEdit" style="display: flex; flex-direction: row; font-size: 30px;">
+                    <i id="minButton" onclick="moveStuff(-1)" class="fi fi-rs-left" style="cursor: pointer; margin-right: 20px;"></i>
+                    <i id="plsButton" onclick="moveStuff(1)" class="fi fi-rs-right" style="cursor: pointer;"></i>
+                </div>
+                
                 <button style="margin-top: 25px; font-size: 15px;" onclick="modifyData()">Change</button>
-                <button onclick="deleteData()" style="background-color: #D00; color: #fff; position: absolute; margin: 0; bottom: 10px; right: 10px; cursor: pointer;">Delete</button>
+
+                <i onclick="deleteData()" class="fi fi-rs-trash" style="padding: 10px; font-size: 20px; background-color: #D00; color: #fff; border-radius: 10px; position: absolute; margin: 0; bottom: 10px; right: 10px; cursor: pointer;""></i>
             </div>
 
             <div id="settingsMenu">
@@ -50,23 +61,25 @@
                 <div style="position: absolute; left: 15px; width: 40%;">
                     <p style="margin-top: 0; margin-bottom: 0;">Status Colors:</p>
                     <div style="display: flex; flex-direction: row;">
-                        <input id="inputStatus0" style="margin-left: 5px; width: 30px;" type="color">
-                        <input id="inputStatus1" style="margin-left: 5px; width: 30px;" type="color">
-                        <input id="inputStatus2" style="margin-left: 5px; width: 30px;" type="color">
+                        <input id="inputStatus0" style="margin-left: 5px; width: 30px;" type="color" data-status="Abandoned" onchange="changeStatusColor(this)">
+                        <input id="inputStatus1" style="margin-left: 5px; width: 30px;" type="color" data-status="Work in Progress" onchange="changeStatusColor(this)">
+                        <input id="inputStatus2" style="margin-left: 5px; width: 30px;" type="color" data-status="Finished" onchange="changeStatusColor(this)">
                     </div>
 
                     <p style="margin-top: 0; margin-bottom: 0;">Notes Color:</p>
-                    <input id="colorNotes" style="margin-left: 5px; width: 30px;" type="color">
+                    <input id="colorNotes" style="margin-left: 5px; width: 30px;" type="color" data-settings="notes-color" onchange="changesSettingsTheme(this)">
                     <p style="margin-top: 0; margin-bottom: 0;">Background Color:</p>
-                    <input id="colorBG" style="margin-left: 5px; width: 30px;" type="color">
+                    <input id="colorBG" style="margin-left: 5px; width: 30px;" type="color" data-settings="background-color" onchange="changesSettingsTheme(this)">
                     
                     
                 </div>
 
                 <div style="position: absolute; right: 15px; width: 40%;">
+                    
                     <button onclick="downloadData()">Save project</button>
                     <button onclick="document.getElementById('inputFile').click()">Load project</button>
                     <button style="margin-right: 5px;" onclick="UIvisible('welcomeMenu', 'none'); UIvisible('settingsMenu', 'none'); UIvisible('projectCreator', 'flex')">Create planner</button>
+                    <button style="color: #fff; background-color: #D00;" onclick="localStorage.clear()">Clear last saved</button>
                 </div>
             </div>
 
@@ -101,9 +114,9 @@
             <div id="taskEditor">
                 <p id="closeUI" onclick="UIvisible('taskEditor', 'none')" style="position: absolute; top: 0; right: 0; margin-top: 10px; margin-right: 15px; cursor: pointer;">x</p>
                 <p>Task Name: </p>
-                <input type="text" id="taskName">
+                <input type="text" id="taskName" onchange="addToProject('task');">
                 <br>
-                <button id="add" onclick="addToProject('task')">Add</button>
+                <button id="add" onclick="addToProject('task');">Add</button>
             </div>
             <div id="chapEditor">
                 <p id="closeUI" onclick="UIvisible('chapEditor', 'none')" style="position: absolute; top: 0; right: 0; margin-top: 10px; margin-right: 15px; cursor: pointer;">x</p>
@@ -114,12 +127,12 @@
                 </select>
                 <div id="ischap">
                     <p>Chapter Name:</p>
-                    <input id="chapEditName" type="text">
+                    <input id="chapEditName" type="text" onchange="addToProject('chapter');">
                     <input id="chapEditColor" type="color" value="#888888">
                 </div>
                 <div id="isnote" style="display: none;">
                     <p>Note:</p>
-                    <input id="noteEdit" style="height: 100px;" type="text">
+                    <input id="noteEdit" style="height: 100px;" type="text" onchange="addToProject('chapter');">
                 </div>
                 <br>
                 <button id="add" onclick="addToProject('chapter')">Add</button>
