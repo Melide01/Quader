@@ -22,6 +22,19 @@ html {
     width: 100%; height: 100%;
     align-items: center; justify-content: center;
 }
+
+#focusMenu {
+    display: none; justify-content: center; align-items: center;
+    flex-direction: column;
+    width: 60%; height: 80%;
+    background-color: #fff; border-radius: 10px; 
+}
+#timer {
+    font-size: 50px; margin-top: 0; margin-bottom: 0; font-weight: 800;
+    border-bottom: solid 5px #000;
+}
+
+
 #modifyData {
     display: none;
     position: relative;
@@ -30,7 +43,7 @@ html {
     justify-content: center; align-items: flex-start;
     flex-direction: column;
     background-color: #fff;
-    width: 80%; min-height: 50%;
+    width: 50%; min-height: 25%;
     border-radius: 5px;
 }
 #welcomeMenu {
@@ -146,6 +159,7 @@ h2 {
     border-radius: 5px;
 }
 #project-chap-status {
+    color: #000000aa;
     display: block; width: 100%; height: 2px; border-bottom: solid 2px #000;
     padding-right: 5px; margin-left: -5px; text-align: right;
     background-color: #fff;
@@ -197,6 +211,13 @@ h2 {
     padding-top: 5px; padding-bottom: 5px;
     background: linear-gradient(to bottom, #00000088, #00000000);
     justify-content: space-between;
+}
+
+#focusTask {
+    background: linear-gradient(to bottom, #969696, #ffffff);
+    padding: 5px;
+    border-radius: 10px;
+    margin-bottom: 5px;
 }
 
 #task p {

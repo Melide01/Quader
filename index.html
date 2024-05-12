@@ -19,9 +19,26 @@
         <script defer src="script.js"></script>
     </head>
     <body>
+        
         <!-- <p style="cursor: pointer; margin-top: 0; font-size: 20px; position: absolute; top: 10px; right: 10px;" onclick="UIvisible('settingsMenu', 'flex')">⚙️</p> -->
-        <i class="fi fi-rs-settings" style="color: #fff; background-color: #00000099; padding: 8px; border-radius: 15px; cursor: pointer; font-size: 20px; position: absolute; top: 10px; right: 10px;" onclick="UIvisible('settingsMenu', 'flex')"></i>
+        <i id="tempUI" class="fi fi-rs-hourglass" style="color: #fff; background-color: #00000099; padding: 8px; border-radius: 15px; cursor: pointer; font-size: 20px; position: absolute; top: 10px; right: 45px;" onclick="UIvisible('focusMenu', 'flex')"></i>
+        <i id="tempUI" class="fi fi-rs-settings" style="color: #fff; background-color: #00000099; padding: 8px; border-radius: 15px; cursor: pointer; font-size: 20px; position: absolute; top: 10px; right: 5px;" onclick="UIvisible('settingsMenu', 'flex')"></i>
         <div id="UI">
+            <div id="focusMenu">
+                <p id="closeUI" onclick="UIvisible('focusMenu', 'none')" style="position: absolute; top: 10%; right: 20%; margin-top: 10px; margin-right: 15px; cursor: pointer;">x</p>
+                <h1 id="timer">Focus</h1>
+                <p style="font-style: italic; font-size: 12px;">this is not functional yet</p>
+                
+                
+                <div id="focusTask"><label>Task 01</label><input type="checkbox"></div>
+                <div id="focusTask"><label>Task 02</label><input type="checkbox"></div>
+                <div id="focusTask"><label>Task 03</label><input type="checkbox"></div>
+                <div id="focusTask"><label>Task 04</label><input type="checkbox"></div>
+
+                <input id="inputTimer" type="number" style="position: absolute; bottom: 16%; width: 50px;" value="20">
+                <button style="position: absolute; bottom: 12%;" onclick="startFocusTimer(document.getElementById('inputTimer').value)">Start</button>
+            </div>
+
             <input style="display: none; width: 100%; height: 100%;" type="file" id="inputFile" onchange="UIvisible('welcomeMenu', 'none'); UIvisible('settingsMenu', 'none'); loadData()">
             <div id="welcomeMenu">
                 <h1 style="margin-bottom: 0; font-size: 25px;">DevPlanner</h1>

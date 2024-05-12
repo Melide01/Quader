@@ -127,7 +127,7 @@ function pageInit() {
         project_data = JSON.parse(saveProj)
         // console.log(project_data)
         loadProject();
-        UIvisible('welcomeMenu', 'none')
+        UIvisible('welcomeMenu', 'none');
     }
 
     for (let i = 0; i < statusArray.length; i++) {
@@ -455,12 +455,24 @@ function boolToValue(value, min, max) {
 }
 
 
-
 var tempUI;
 function UIvisible(ui, type) {
+    //const tempUIArray = document.querySelectorAll('#tempUI');
+
+    // tempUIArray.forEach(element => {
+    //     element.style.display = "none";
+    // });
+
     mainUI.style.display = type;
-    tempUI = document.getElementById(ui);
-    tempUI.style.display = type;
+    // tempUI = document.getElementById(ui);
+    var stringUI = "#" + ui;
+    var tempUIArray = document.querySelectorAll(stringUI);
+
+    tempUIArray.forEach(element => {
+        element.style.display = type;
+    });
+
+    // tempUI.style.display = type;
     updateMoveArrow();
 }
 function addToProject(type) {
@@ -621,4 +633,34 @@ function moveStuff(dir) {
 
     UIvisible('modifyData', 'none');
     loadProject();
+}
+
+
+
+const timerElement = document.getElementById("timer");
+var isFocusTimerActive = false;
+function startFocusTimer(time) {
+    if (isFocusTimerActive) {
+        console.log('Alert: FocusTimer already active')
+        return;
+    }
+    isFocusTimerActive = true;
+    var seconds = time;
+
+    timerElement.innerText = seconds;
+    seconds --;
+
+    var countdown = setInterval(function() {
+        console.log(seconds);
+        timerElement.innerText = seconds;
+
+        if (seconds < 0) {
+            clearInterval(countdown);
+            isFocusTimerActive = false;
+            timerElement.innerText = "Time is Up!"
+            console.log("Time is Up");
+        } else {
+            seconds --;
+        }
+    }, 1000);
 }
