@@ -125,7 +125,7 @@ function pageInit() {
     if (localStorage.getItem('project') !== null) {
         const saveProj = localStorage.getItem('project');
         project_data = JSON.parse(saveProj)
-        // console.log(project_data)
+        console.log(project_data)
         loadProject();
         UIvisible('welcomeMenu', 'none');
     }
@@ -302,37 +302,6 @@ function loadProject(condition) {
         chapDiv.onmouseover = function () { popupMessage('block') }; chapDiv.onmouseout = function () { popupMessage('none') };
         chapDiv.onclick = function () { statusSelect(this) };
 
-        // Progression Bar Support
-        if (chapMetadata['progessionValue'] === undefined) {
-            alert('Your project is from an old version, Im going to update it!');
-            project_data['project'][chapters[i]]['metadata']['progessionValue'] = "0";
-
-            taskList.forEach(function(element, index) {
-                var adjustProgress = parseInt(project_data['project'][chapters[i]]['metadata']['progessionValue']) + boolToValue(project_data['project'][chapters[i]]['tasks'][element]['metadata']["status"], 0, 1);
-
-                project_data['project'][chapters[i]]['metadata']['progessionValue'] = adjustProgress;
-            });
-
-            loadProject();
-
-            
-        } else {
-            
-            // updates chapter status bar
-            if (taskList.length > 0) {
-                const progressionValue = (chapMetadata['progessionValue'] / taskList.length) * 100;
-                var chapStatusBar = document.createElement("div"); chapStatusBar.id = "project-chap-status";
-                chapStatusBar.style.width = progressionValue + "%";
-                chapStatusBar.textContent = Math.round(progressionValue) + "%";
-                contDiv.prepend(chapStatusBar);
-            }
-        }
-
-        
-        
-
-        
-
         // adapt text color
         var chapTextColor;
         if ((getColorMoyenne(chapMetadata['background-color']) / 255) < 0.5) {
@@ -398,13 +367,6 @@ function loadProject(condition) {
             inputBox.onchange = function () {
                 const chapter = this.parentNode.parentNode.parentNode.querySelector('div#chapters').innerText.trimEnd();
                 project_data['project'][chapter]['tasks'][this.parentNode.innerText.trimEnd()]['metadata']['status'] = this.checked;
-                
-                // Updates the progression bar
-                var convertedBool = boolToValue(this.checked, -1, 1);
-                var toIntValue = parseInt(project_data['project'][chapter]['metadata']['progessionValue']);
-                toIntValue += convertedBool;
-                project_data['project'][chapter]['metadata']['progessionValue'] = toIntValue;
-                
                 loadProject();
             }
         };
@@ -450,10 +412,10 @@ function statusSelect(obj) {
     }, 500);
 }
 
+
 function boolToValue(value, min, max) {
     return Boolean(value) ? max : min;
 }
-
 
 var tempUI;
 function UIvisible(ui, type) {
@@ -464,7 +426,7 @@ function UIvisible(ui, type) {
     // });
 
     mainUI.style.display = type;
-    // tempUI = document.getElementById(ui);
+    tempUI = document.getElementById(ui);
     var stringUI = "#" + ui;
     var tempUIArray = document.querySelectorAll(stringUI);
 
@@ -503,7 +465,7 @@ function addToProject(type) {
                 return;
             }
             var chapColor = document.getElementById('chapEditColor').value;
-            project_data['project'] = addToDictionaryIndex(editScope, chapName, { "metadata": {"progessionValue": "0", "status": "Work in Progress", "creation_date": currentTime.toLocaleString('en-US', timeOptions), "completion-date": "", "background-color": chapColor }, "tasks": {} }, 999);
+            project_data['project'] = addToDictionaryIndex(editScope, chapName, { "metadata": { "status": "Work in Progress", "creation_date": currentTime.toLocaleString('en-US', timeOptions), "completion-date": "", "background-color": chapColor }, "tasks": {} }, 999);
             document.getElementById('chapEditName').value = '';
             document.getElementById('chapEditColor').value = '#888888';
         }
@@ -553,9 +515,6 @@ function deleteData() {
     if (editTarget.length === 1) {
         delete project_data['project'][editTarget[0]];
     } else {
-        const updateValue = boolToValue(project_data['project'][editTarget[0]]['tasks'][editTarget[1]]['metadata']['status'], 0, 1);
-        var updateProgress = parseInt(project_data['project'][editTarget[0]]['metadata']['progessionValue']);
-        project_data['project'][editTarget[0]]['metadata']['progessionValue'] = updateProgress - updateValue;
         delete project_data['project'][editTarget[0]]['tasks'][editTarget[1]];
     }
     UIvisible('modifyData', 'none');
